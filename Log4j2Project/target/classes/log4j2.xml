@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Configuration status="WARN">
+	<Properties>
+		<Property name="basePath">D:\\logs</Property>
+	</Properties>
+	<Appenders>
+		<Console name="toConsole" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{ABSOLUTE} %-5level %c{1}:%t:%L %msg%n" />
+		</Console>
+		<File name="toFile" fileName="${basePath}/errors-log4j2.log" append="false">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss,SSS} %-5level %F:%c{1}:%t:%L %msg%n" />
+			<ThresholdFilter level="ERROR" onMatch="ACCEPT" onMismatch="Deny" />
+		</File>
+		<RollingFile name="sizeBasedRollingFile" fileName="/logs/rollingFile-log4j2-size.log"
+			filePattern="/logs/rollingFile-log4j2-size-%d{yyy-MM-dd} -%i.log.gz" bufferSize="10">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mma} %-5level %c{1}:%L %msg%n "/>
+			<Filters>
+				<LevelRangeFilter minLevel="INFO" maxLevel="DEBUG" onMatch="ACCEPT" onMisMatch="DENY" />
+			</Filters>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10KB" />
+			</Policies>
+			<DefaultRolloverStrategy max="10" />
+		</RollingFile>
+		<RollingFile name="timeBasedRollingFie" fileName="/logs/rollingFile-log4j2-time.log"
+			filePattern ="/logs/rollingFile-log4j2-time-%d{yyyy-MM-dd HH-MM} -%i.log.gz" bufferSize="10">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm} %-5level %c{1}:%t %msg%n "/>
+			<Filters>
+				<LevelRangeFilter minLevel="DEBUG" maxLevel="DEBUG" onMatch="ACCEPT" onMisMatch="DENY" />
+			</Filters>
+			<Policies>
+				<TimeBasedTriggeringPolicy interval="1" modulate="true" />
+			</Policies>
+			<DefaultRolloverStrategy max="10" />
+		</RollingFile>
+		<RollingFile name="stringMatchedFile" fileName="/logs/rollingFile-log4j2-regex.log"
+			filePattern ="/logs/rollingFile-log4j2-regex-%d{yyyy-MM-dd HH-MM} -%i.log.gz" bufferSize="10">
+			<PatternLayout pattern="%d{yyyy-MM-dd HH:mm} %-5level %c{1}:%l %msg%n "/>
+			<Filters>
+				<RegexFilter regex=".*test.*" onMatch="ACCEPT" onMisMatch="DENY" />
+			</Filters>
+			<Policies>
+				<SizeBasedTriggeringPolicy size="10KB"  />
+			</Policies>
+			<DefaultRolloverStrategy max="10" />
+		</RollingFile>
+		<Async name="AsyncTest" bufferSize="4" includeLocation="true">
+			<AppenderRef ref="sizeBasedRollingFile" />
+			<AppenderRef ref="timeBasedRollingFie" />
+			<AppenderRef ref="stringMatchedFile" />
+			<AppenderRef ref="toFile" />
+			<AppenderRef ref="toConsole" />
+		</Async>
+	</Appenders>
+	<Loggers>
+		<Root level="DEBUG" >
+			<appenderRef ref="AsyncTest" /> 
+		</Root>
+	</Loggers>
+</Configuration>
